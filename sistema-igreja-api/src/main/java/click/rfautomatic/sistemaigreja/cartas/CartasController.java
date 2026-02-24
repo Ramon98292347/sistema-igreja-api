@@ -1,11 +1,15 @@
 package click.rfautomatic.sistemaigreja.cartas;
 
+import click.rfautomatic.sistemaigreja.auth.JwtAuthenticationToken;
+import click.rfautomatic.sistemaigreja.auth.JwtPrincipal;
 import click.rfautomatic.sistemaigreja.docs.DocumentoEmitidoEntity;
 import click.rfautomatic.sistemaigreja.docs.DocumentoEmitidoRepository;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,45 +17,46 @@ import org.springframework.web.bind.annotation.*;
 public class CartasController {
 
   private final CartasService service;
+  private final CartasRpcService rpc;
   private final CartaRepository cartas;
   private final DocumentoEmitidoRepository docs;
 
-  public CartasController(CartasService service, CartaRepository cartas, DocumentoEmitidoRepository docs) {
+  public CartasController(CartasService service, CartasRpcService rpc, CartaRepository cartas, DocumentoEmitidoRepository docs) {
     this.service = service;
+    this.rpc = rpc;
     this.cartas = cartas;
     this.docs = docs;
   }
 
   public record EmitirCartaRequest(
-      String pregador_nome,
-      String cargo_ministerial,
-      String igreja_origem_nome,
-      String igreja_origem_codigo,
-      String igreja_destino_nome,
-      String igreja_destino_codigo,
+      String membro_id,
+      String igreja_destino_id,
       String data_pregacao,
       String turno,
-      String membro_id) {}
+      String horario_pregacao,
+      String observacao) {}
 
   public record EmitirCartaResponse(String carta_id, String documento_emitido_id) {}
 
   @PostMapping("/emitir")
   @ResponseStatus(HttpStatus.CREATED)
-  public EmitirCartaResponse emitir(@RequestBody EmitirCartaRequest body) {
-    UUID membroId = body.membro_id() == null || body.membro_id().isBlank() ? null : UUID.fromString(body.membro_id());
+  public EmitirCartaResponse emitir(@RequestBody EmitirCartaRequest body, Authentication authentication) {
+    JwtPrincipal principal = ((JwtAuthenticationToken) authentication).getPrincipal() instanceof JwtPrincipal p ? p : null;
 
-    CartasService.EmitirCartaResult r =
-        service.emitir(
+    UUID membroId = UUID.fromString(body.membro_id());
+    UUID igrejaDestinoId = UUID.fromString(body.igreja_destino_id());
+
+    UUID cartaId =
+        rpc.emitirCartaValidada(
+            principal,
             membroId,
-            body.pregador_nome(),
-            body.cargo_ministerial(),
-            body.igreja_origem_nome(),
-            body.igreja_origem_codigo(),
-            body.igreja_destino_nome(),
-            body.igreja_destino_codigo(),
+            igrejaDestinoId,
             LocalDate.parse(body.data_pregacao()),
-            body.turno());
+            body.turno(),
+            LocalTime.parse(body.horario_pregacao()),
+            body.observacao());
 
+    CartasService.EmitirCartaResult r = service.criarDocumentoEmitidoEChamarN8n(cartaId);
     return new EmitirCartaResponse(r.cartaId().toString(), r.documentoEmitidoId().toString());
   }
 
