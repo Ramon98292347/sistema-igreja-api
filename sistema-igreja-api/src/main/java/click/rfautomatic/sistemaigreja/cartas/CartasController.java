@@ -88,13 +88,20 @@ public class CartasController {
     return payload;
   }
 
-  public record DocumentoCallbackRequest(String status, String url_documento, String erro_msg) {}
+  public record DocumentoCallbackRequest(
+      String status,
+      String url_documento,
+      String r2_bucket,
+      String r2_key,
+      String erro_msg) {}
 
   @PostMapping("/documentos_emitidos/{id}/callback")
   public DocumentoEmitidoEntity callback(@PathVariable("id") UUID id, @RequestBody DocumentoCallbackRequest body) {
     DocumentoEmitidoEntity d = docs.findById(id).orElseThrow();
     if (body.status() != null) d.setStatus(body.status());
     if (body.url_documento() != null) d.setUrlDocumento(body.url_documento());
+    if (body.r2_bucket() != null) d.setR2Bucket(body.r2_bucket());
+    if (body.r2_key() != null) d.setR2Key(body.r2_key());
     if (body.erro_msg() != null) d.setErroMsg(body.erro_msg());
     return docs.save(d);
   }

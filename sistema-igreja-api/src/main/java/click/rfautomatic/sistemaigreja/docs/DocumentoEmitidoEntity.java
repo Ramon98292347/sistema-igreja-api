@@ -21,6 +21,12 @@ public class DocumentoEmitidoEntity {
   @Column(name = "url_documento")
   private String urlDocumento;
 
+  @Column(name = "r2_bucket")
+  private String r2Bucket;
+
+  @Column(name = "r2_key")
+  private String r2Key;
+
   @Column(name = "erro_msg")
   private String erroMsg;
 
@@ -67,6 +73,22 @@ public class DocumentoEmitidoEntity {
 
   public void setUrlDocumento(String urlDocumento) {
     this.urlDocumento = urlDocumento;
+  }
+
+  public String getR2Bucket() {
+    return r2Bucket;
+  }
+
+  public void setR2Bucket(String r2Bucket) {
+    this.r2Bucket = r2Bucket;
+  }
+
+  public String getR2Key() {
+    return r2Key;
+  }
+
+  public void setR2Key(String r2Key) {
+    this.r2Key = r2Key;
   }
 
   public String getErroMsg() {
