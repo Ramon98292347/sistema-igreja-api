@@ -1,0 +1,43 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: sistema-igreja-api
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+  flyway:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    issuer: sistema-igreja
+    accessTokenMinutes: ${JWT_ACCESS_MINUTES:480}
+  admin:
+    cpf: ${ADMIN_CPF}
+    email: ${ADMIN_EMAIL:}
+    password: ${ADMIN_PASSWORD}
+
+n8n:
+  webhook:
+    cartas-url: ${N8N_WEBHOOK_CARTAS_URL:}
+    secret: ${N8N_WEBHOOK_SECRET:}
