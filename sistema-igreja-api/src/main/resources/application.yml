@@ -36,8 +36,21 @@ app:
     cpf: ${ADMIN_CPF}
     email: ${ADMIN_EMAIL:}
     password: ${ADMIN_PASSWORD}
+  r2:
+    # S3-compatible endpoint, e.g. https://<accountid>.r2.cloudflarestorage.com
+    endpoint: ${R2_ENDPOINT:}
+    region: ${R2_REGION:auto}
+    bucket: ${R2_BUCKET:}
+    accessKeyId: ${R2_ACCESS_KEY_ID:}
+    secretAccessKey: ${R2_SECRET_ACCESS_KEY:}
 
 n8n:
   webhook:
     cartas-url: ${N8N_WEBHOOK_CARTAS_URL:}
     secret: ${N8N_WEBHOOK_SECRET:}
+
+r2:
+  endpoint: ${SISTEMA_R2_ENDPOINT:}
+  accessKeyId: ${SISTEMA_R2_ACCESS_KEY_ID:}
+  secretAccessKey: ${SISTEMA_R2_SECRET_ACCESS_KEY:}
+  bucket: ${SISTEMA_R2_BUCKET:ipda-prod}
