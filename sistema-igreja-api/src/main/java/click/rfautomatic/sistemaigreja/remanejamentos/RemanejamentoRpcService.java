@@ -17,19 +17,21 @@ public class RemanejamentoRpcService {
 
   @Transactional
   public void transferirMembro(JwtPrincipal principal, UUID membroId, UUID novaIgrejaId, String motivo) {
-    if (principal == null || principal.userId() == null || principal.userId().isBlank()) {
-      throw new IllegalArgumentException("Usuário não autenticado");
-    }
+    requireUser(principal);
     jdbc.update("SET LOCAL app.user_id = ?", principal.userId());
     jdbc.update("SELECT transferir_membro(?, ?, ?)", membroId, novaIgrejaId, motivo);
   }
 
   @Transactional
   public void remanejarPastor(JwtPrincipal principal, UUID pastorId, UUID novaIgrejaId, String motivo) {
+    requireUser(principal);
+    jdbc.update("SET LOCAL app.user_id = ?", principal.userId());
+    jdbc.update("SELECT remanejar_pastor(?, ?, ?)", pastorId, novaIgrejaId, motivo);
+  }
+
+  private static void requireUser(JwtPrincipal principal) {
     if (principal == null || principal.userId() == null || principal.userId().isBlank()) {
       throw new IllegalArgumentException("Usuário não autenticado");
     }
-    jdbc.update("SET LOCAL app.user_id = ?", principal.userId());
-    jdbc.update("SELECT remanejar_pastor(?, ?, ?)", pastorId, novaIgrejaId, motivo);
   }
 }
