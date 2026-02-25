@@ -37,9 +37,8 @@ public class SecurityConfig {
             auth.requestMatchers("/actuator/health", "/actuator/info").permitAll()
                 // CORS preflight
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                .requestMatchers(HttpMethod.POST, "/auth/first-access").permitAll()
-                .requestMatchers(HttpMethod.POST, "/auth/first-access/set-password").permitAll()
+                // Public auth endpoints
+                .requestMatchers("/auth/**").permitAll()
                 // n8n fetch/callback (protected by X-Webhook-Secret filter)
                 .requestMatchers(HttpMethod.GET, "/api/cartas/*/payload").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/cartas/documentos_emitidos/*/callback").permitAll()
