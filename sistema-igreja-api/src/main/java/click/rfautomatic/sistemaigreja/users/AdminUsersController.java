@@ -21,7 +21,7 @@ public class AdminUsersController {
     this.encoder = encoder;
   }
 
-  public record ResetPasswordRequest(String nova_senha) {}
+  public record ResetPasswordRequest(String nova_senha, Boolean first_access_pending) {}
 
   public record ResetPasswordResponse(String senha_temporaria) {}
 
@@ -43,6 +43,11 @@ public class AdminUsersController {
     }
 
     u.setSenhaHash(encoder.encode(next));
+
+    // Optionally mark as first access pending (so user can set their own password on first login)
+    boolean pending = body != null && Boolean.TRUE.equals(body.first_access_pending());
+    u.setFirstAccessPending(pending);
+
     users.save(u);
 
     return new ResetPasswordResponse(next);
