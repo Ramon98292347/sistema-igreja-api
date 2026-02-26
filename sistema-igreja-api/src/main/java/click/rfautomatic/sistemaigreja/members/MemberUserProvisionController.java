@@ -26,6 +26,8 @@ public class MemberUserProvisionController {
     this.encoder = encoder;
   }
 
+  public record ProvisionUserRequest(String nova_senha) {}
+
   public record ProvisionUserResponse(String usuario_id, String senha_temporaria) {}
 
   /**
@@ -34,7 +36,10 @@ public class MemberUserProvisionController {
    */
   @PostMapping("/{id}/provision-user")
   @ResponseStatus(HttpStatus.OK)
-  public ProvisionUserResponse provision(@PathVariable UUID id, Authentication authentication) {
+  public ProvisionUserResponse provision(
+      @PathVariable UUID id,
+      @RequestBody(required = false) ProvisionUserRequest body,
+      Authentication authentication) {
     Authz.requireAdminOrPastor(authentication);
 
     MembroEntity m = membros.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Membro não encontrado"));
@@ -66,7 +71,10 @@ public class MemberUserProvisionController {
       }
     }
 
-    String temp = generateTempPassword(12);
+    String temp = body == null ? null : body.nova_senha();
+    if (temp == null || temp.isBlank()) {
+      temp = generateTempPassword(12);
+    }
 
     if (u == null) {
       u = new UserEntity();
