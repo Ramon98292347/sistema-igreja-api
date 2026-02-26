@@ -1,9 +1,12 @@
 package click.rfautomatic.sistemaigreja.members;
 
 import click.rfautomatic.sistemaigreja.churches.IgrejaEntity;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(
@@ -40,6 +43,16 @@ public class MembroEntity {
 
   @Column(name = "foto_r2_key")
   private String fotoR2Key;
+
+  @Column(name = "cargo_ministerial")
+  private String cargoMinisterial;
+
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Column(name = "ficha_json", columnDefinition = "jsonb")
+  private JsonNode fichaJson;
+
+  @Column(name = "ativo", nullable = false)
+  private boolean ativo = true;
 
   @Column(name = "created_at", nullable = false)
   private Instant createdAt = Instant.now();
@@ -118,6 +131,30 @@ public class MembroEntity {
 
   public void setFotoR2Key(String fotoR2Key) {
     this.fotoR2Key = fotoR2Key;
+  }
+
+  public String getCargoMinisterial() {
+    return cargoMinisterial;
+  }
+
+  public void setCargoMinisterial(String cargoMinisterial) {
+    this.cargoMinisterial = cargoMinisterial;
+  }
+
+  public JsonNode getFichaJson() {
+    return fichaJson;
+  }
+
+  public void setFichaJson(JsonNode fichaJson) {
+    this.fichaJson = fichaJson;
+  }
+
+  public boolean isAtivo() {
+    return ativo;
+  }
+
+  public void setAtivo(boolean ativo) {
+    this.ativo = ativo;
   }
 }
 

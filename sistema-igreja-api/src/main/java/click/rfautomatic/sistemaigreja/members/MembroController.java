@@ -37,6 +37,9 @@ public class MembroController {
       String telefone,
       UUID church_id,
       UUID usuario_id,
+      String cargo_ministerial,
+      Boolean ativo,
+      com.fasterxml.jackson.databind.JsonNode ficha_json,
       String foto_r2_bucket,
       String foto_r2_key) {
     static MembroDto from(MembroEntity e) {
@@ -49,6 +52,9 @@ public class MembroController {
           e.getTelefone(),
           cid,
           e.getUsuarioId(),
+          e.getCargoMinisterial(),
+          e.isAtivo(),
+          e.getFichaJson(),
           e.getFotoR2Bucket(),
           e.getFotoR2Key());
     }
@@ -74,6 +80,9 @@ public class MembroController {
       String telefone,
       UUID church_id,
       UUID usuario_id,
+      String cargo_ministerial,
+      Boolean ativo,
+      com.fasterxml.jackson.databind.JsonNode ficha_json,
       String foto_r2_bucket,
       String foto_r2_key,
       CreateUsuarioInlineRequest usuario) {}
@@ -89,6 +98,9 @@ public class MembroController {
     e.setTelefone(body.telefone());
     e.setFotoR2Bucket(body.foto_r2_bucket());
     e.setFotoR2Key(body.foto_r2_key());
+    e.setCargoMinisterial(body.cargo_ministerial());
+    e.setAtivo(body.ativo() == null ? true : body.ativo());
+    e.setFichaJson(body.ficha_json());
 
     if (body.church_id() != null) {
       e.setIgreja(igrejas.findById(body.church_id()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "church_id inválido")));
@@ -129,6 +141,9 @@ public class MembroController {
       String telefone,
       UUID church_id,
       UUID usuario_id,
+      String cargo_ministerial,
+      Boolean ativo,
+      com.fasterxml.jackson.databind.JsonNode ficha_json,
       String foto_r2_bucket,
       String foto_r2_key) {}
 
@@ -143,6 +158,9 @@ public class MembroController {
     e.setTelefone(body.telefone());
     e.setFotoR2Bucket(body.foto_r2_bucket());
     e.setFotoR2Key(body.foto_r2_key());
+    e.setCargoMinisterial(body.cargo_ministerial());
+    if (body.ativo() != null) e.setAtivo(body.ativo());
+    e.setFichaJson(body.ficha_json());
 
     if (body.church_id() != null) {
       e.setIgreja(igrejas.findById(body.church_id()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "church_id inválido")));
