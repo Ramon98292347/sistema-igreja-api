@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -34,11 +35,11 @@ public class SecurityConfig {
 
     http.authorizeHttpRequests(
         auth ->
-            auth.requestMatchers("/actuator/health", "/actuator/info").permitAll()
+            auth.requestMatchers(new AntPathRequestMatcher("/actuator/health"), new AntPathRequestMatcher("/actuator/info")).permitAll()
                 // CORS preflight
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // Public auth endpoints
-                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/auth/**")).permitAll()
                 // n8n fetch/callback (protected by X-Webhook-Secret filter)
                 .requestMatchers(HttpMethod.GET, "/api/cartas/*/payload").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/cartas/documentos_emitidos/*/callback").permitAll()
