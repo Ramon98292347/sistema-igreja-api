@@ -47,6 +47,9 @@ public class MembroEntity {
   @Column(name = "cargo_ministerial")
   private String cargoMinisterial;
 
+  @Column(name = "cargo_sistema")
+  private String cargoSistema;
+
   @JdbcTypeCode(SqlTypes.JSON)
   @Column(name = "ficha_json", columnDefinition = "jsonb")
   private JsonNode fichaJson;
@@ -139,6 +142,14 @@ public class MembroEntity {
 
   public void setCargoMinisterial(String cargoMinisterial) {
     this.cargoMinisterial = cargoMinisterial;
+  }
+
+  public String getCargoSistema() {
+    return cargoSistema;
+  }
+
+  public void setCargoSistema(String cargoSistema) {
+    this.cargoSistema = cargoSistema;
   }
 
   public JsonNode getFichaJson() {

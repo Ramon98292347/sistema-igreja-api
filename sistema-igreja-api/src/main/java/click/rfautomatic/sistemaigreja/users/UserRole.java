@@ -4,5 +4,8 @@ public enum UserRole {
   ADMIN,
   PASTOR,
   FINANCEIRO,
+  MEMBRO,
+  SECRETARIA,
+  DEPOSITO,
   OPERADOR
 }

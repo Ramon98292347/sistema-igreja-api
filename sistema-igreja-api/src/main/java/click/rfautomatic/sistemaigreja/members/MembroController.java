@@ -38,6 +38,7 @@ public class MembroController {
       UUID church_id,
       UUID usuario_id,
       String cargo_ministerial,
+      String cargo_sistema,
       Boolean ativo,
       com.fasterxml.jackson.databind.JsonNode ficha_json,
       String foto_r2_bucket,
@@ -53,6 +54,7 @@ public class MembroController {
           cid,
           e.getUsuarioId(),
           e.getCargoMinisterial(),
+          e.getCargoSistema(),
           e.isAtivo(),
           e.getFichaJson(),
           e.getFotoR2Bucket(),
@@ -81,6 +83,7 @@ public class MembroController {
       UUID church_id,
       UUID usuario_id,
       String cargo_ministerial,
+      String cargo_sistema,
       Boolean ativo,
       com.fasterxml.jackson.databind.JsonNode ficha_json,
       String foto_r2_bucket,
@@ -99,6 +102,7 @@ public class MembroController {
     e.setFotoR2Bucket(body.foto_r2_bucket());
     e.setFotoR2Key(body.foto_r2_key());
     e.setCargoMinisterial(body.cargo_ministerial() == null || body.cargo_ministerial().isBlank() ? "membro" : body.cargo_ministerial());
+    e.setCargoSistema(body.cargo_sistema());
     e.setAtivo(body.ativo() == null ? true : body.ativo());
     e.setFichaJson(body.ficha_json());
 
@@ -142,6 +146,7 @@ public class MembroController {
       UUID church_id,
       UUID usuario_id,
       String cargo_ministerial,
+      String cargo_sistema,
       Boolean ativo,
       com.fasterxml.jackson.databind.JsonNode ficha_json,
       String foto_r2_bucket,
@@ -159,6 +164,7 @@ public class MembroController {
     e.setFotoR2Bucket(body.foto_r2_bucket());
     e.setFotoR2Key(body.foto_r2_key());
     e.setCargoMinisterial(body.cargo_ministerial());
+    e.setCargoSistema(body.cargo_sistema());
     if (body.ativo() != null) e.setAtivo(body.ativo());
     e.setFichaJson(body.ficha_json());
 
