@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +27,9 @@ public class SecurityConfig {
       JwtService jwtService,
       click.rfautomatic.sistemaigreja.n8n.N8nSecretFilter n8nSecretFilter)
       throws Exception {
-    http.csrf(csrf -> csrf.disable());
+    http.csrf(AbstractHttpConfigurer::disable);
+    http.formLogin(AbstractHttpConfigurer::disable);
+    http.httpBasic(AbstractHttpConfigurer::disable);
 
     // Needed for browser calls (church-hub) -> API
     http.cors(cors -> {});
