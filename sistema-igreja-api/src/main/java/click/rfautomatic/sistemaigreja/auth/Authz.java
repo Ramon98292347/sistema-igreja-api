@@ -20,4 +20,12 @@ public final class Authz {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sem permissão");
     }
   }
+
+  public static void requireAdminOrPastor(Authentication authentication) {
+    JwtPrincipal p = requirePrincipal(authentication);
+    String role = p.role() == null ? "" : p.role().trim();
+    if (!(role.equalsIgnoreCase("ADMIN") || role.equalsIgnoreCase("PASTOR"))) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sem permissão");
+    }
+  }
 }

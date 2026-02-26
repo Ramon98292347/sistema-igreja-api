@@ -33,7 +33,7 @@ public class AdminUsersController {
   @ResponseStatus(HttpStatus.OK)
   public ResetPasswordResponse resetPassword(
       @PathVariable UUID id, @RequestBody(required = false) ResetPasswordRequest body, Authentication authentication) {
-    Authz.requireAdmin(authentication);
+    Authz.requireAdminOrPastor(authentication);
 
     UserEntity u = users.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
