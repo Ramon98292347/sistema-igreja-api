@@ -98,7 +98,7 @@ public class MembroController {
     e.setTelefone(body.telefone());
     e.setFotoR2Bucket(body.foto_r2_bucket());
     e.setFotoR2Key(body.foto_r2_key());
-    e.setCargoMinisterial(body.cargo_ministerial());
+    e.setCargoMinisterial(body.cargo_ministerial() == null || body.cargo_ministerial().isBlank() ? "membro" : body.cargo_ministerial());
     e.setAtivo(body.ativo() == null ? true : body.ativo());
     e.setFichaJson(body.ficha_json());
 
@@ -173,6 +173,18 @@ public class MembroController {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "usuario_id inválido");
     }
     e.setUsuarioId(body.usuario_id());
+
+    // if member has login user linked, allow updating their role based on cargo (admin only)
+    if (e.getUsuarioId() != null && body.cargo_ministerial() != null && !body.cargo_ministerial().isBlank()) {
+      users.findById(e.getUsuarioId()).ifPresent(u -> {
+        try {
+          u.setRole(UserRole.valueOf(body.cargo_ministerial().trim().toUpperCase()));
+          users.save(u);
+        } catch (Exception ignored) {
+          // ignore invalid cargo values
+        }
+      });
+    }
 
     return MembroDto.from(membros.save(e));
   }

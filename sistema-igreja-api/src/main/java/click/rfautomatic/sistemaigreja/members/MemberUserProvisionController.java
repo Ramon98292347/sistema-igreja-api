@@ -80,7 +80,7 @@ public class MemberUserProvisionController {
       u = new UserEntity();
       u.setCpf(cpf);
       u.setEmail(email);
-      u.setRole(UserRole.OPERADOR);
+      u.setRole(roleFromCargo(m.getCargoMinisterial()));
       u.setAtivo(true);
     }
 
@@ -92,6 +92,14 @@ public class MemberUserProvisionController {
     membros.save(m);
 
     return new ProvisionUserResponse(u.getId().toString(), temp);
+  }
+
+  private static UserRole roleFromCargo(String cargo) {
+    if (cargo == null) return UserRole.OPERADOR;
+    String c = cargo.trim().toLowerCase();
+    if (c.equals("pastor")) return UserRole.PASTOR;
+    if (c.equals("financeiro")) return UserRole.FINANCEIRO;
+    return UserRole.OPERADOR;
   }
 
   private static String generateTempPassword(int len) {
