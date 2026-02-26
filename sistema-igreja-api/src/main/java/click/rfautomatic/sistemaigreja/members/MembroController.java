@@ -180,11 +180,11 @@ public class MembroController {
     }
     e.setUsuarioId(body.usuario_id());
 
-    // if member has login user linked, allow updating their role based on cargo (admin only)
-    if (e.getUsuarioId() != null && body.cargo_ministerial() != null && !body.cargo_ministerial().isBlank()) {
+    // If member has login user linked, optionally sync their system role from cargo_sistema
+    if (e.getUsuarioId() != null && body.cargo_sistema() != null && !body.cargo_sistema().isBlank()) {
       users.findById(e.getUsuarioId()).ifPresent(u -> {
         try {
-          u.setRole(UserRole.valueOf(body.cargo_ministerial().trim().toUpperCase()));
+          u.setRole(UserRole.valueOf(body.cargo_sistema().trim().toUpperCase()));
           users.save(u);
         } catch (Exception ignored) {
           // ignore invalid cargo values

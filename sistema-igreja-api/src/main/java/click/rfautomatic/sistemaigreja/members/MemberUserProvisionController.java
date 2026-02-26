@@ -80,8 +80,13 @@ public class MemberUserProvisionController {
       u = new UserEntity();
       u.setCpf(cpf);
       u.setEmail(email);
-      u.setRole(roleFromCargo(m.getCargoMinisterial()));
+      u.setRole(roleFromCargoSistema(m.getCargoSistema()));
       u.setAtivo(true);
+    }
+
+    // If existing user has no email, fill from member when available
+    if ((u.getEmail() == null || u.getEmail().isBlank()) && email != null && !email.isBlank()) {
+      u.setEmail(email);
     }
 
     u.setSenhaHash(encoder.encode(temp));
@@ -94,12 +99,13 @@ public class MemberUserProvisionController {
     return new ProvisionUserResponse(u.getId().toString(), temp);
   }
 
-  private static UserRole roleFromCargo(String cargo) {
-    if (cargo == null) return UserRole.OPERADOR;
-    String c = cargo.trim().toLowerCase();
-    if (c.equals("pastor")) return UserRole.PASTOR;
-    if (c.equals("financeiro")) return UserRole.FINANCEIRO;
-    return UserRole.OPERADOR;
+  private static UserRole roleFromCargoSistema(String cargoSistema) {
+    if (cargoSistema == null || cargoSistema.isBlank()) return UserRole.MEMBRO;
+    try {
+      return UserRole.valueOf(cargoSistema.trim().toUpperCase());
+    } catch (Exception e) {
+      return UserRole.MEMBRO;
+    }
   }
 
   private static String generateTempPassword(int len) {
