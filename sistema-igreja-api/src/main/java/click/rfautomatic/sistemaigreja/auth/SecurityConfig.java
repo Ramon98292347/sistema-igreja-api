@@ -39,6 +39,7 @@ public class SecurityConfig {
     http.authorizeHttpRequests(
         auth ->
             auth.requestMatchers(new AntPathRequestMatcher("/actuator/health"), new AntPathRequestMatcher("/actuator/info")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
                 // CORS preflight
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // Public auth endpoints
