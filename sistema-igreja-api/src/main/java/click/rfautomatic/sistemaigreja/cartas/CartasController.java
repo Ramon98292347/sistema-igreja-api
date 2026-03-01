@@ -43,21 +43,27 @@ public class CartasController {
   public EmitirCartaResponse emitir(@RequestBody EmitirCartaRequest body, Authentication authentication) {
     JwtPrincipal principal = ((JwtAuthenticationToken) authentication).getPrincipal() instanceof JwtPrincipal p ? p : null;
 
-    UUID membroId = UUID.fromString(body.membro_id());
-    UUID igrejaDestinoId = UUID.fromString(body.igreja_destino_id());
+    try {
+      UUID membroId = UUID.fromString(body.membro_id());
+      UUID igrejaDestinoId = UUID.fromString(body.igreja_destino_id());
 
-    UUID cartaId =
-        rpc.emitirCartaValidada(
-            principal,
-            membroId,
-            igrejaDestinoId,
-            LocalDate.parse(body.data_pregacao()),
-            body.turno(),
-            LocalTime.parse(body.horario_pregacao()),
-            body.observacao());
+      UUID cartaId =
+          rpc.emitirCartaValidada(
+              principal,
+              membroId,
+              igrejaDestinoId,
+              LocalDate.parse(body.data_pregacao()),
+              body.turno(),
+              LocalTime.parse(body.horario_pregacao()),
+              body.observacao());
 
-    CartasService.EmitirCartaResult r = service.criarDocumentoEmitidoEChamarN8n(cartaId);
-    return new EmitirCartaResponse(r.cartaId().toString(), r.documentoEmitidoId().toString());
+      CartasService.EmitirCartaResult r = service.criarDocumentoEmitidoEChamarN8n(cartaId);
+      return new EmitirCartaResponse(r.cartaId().toString(), r.documentoEmitidoId().toString());
+    } catch (Exception e) {
+      throw new org.springframework.web.server.ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Dados inválidos para emitir carta. Verifique membro/igreja/data/turno/horário.");
+    }
   }
 
   @GetMapping("/{id}/payload")
